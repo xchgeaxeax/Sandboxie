@@ -151,8 +151,7 @@ SB_PROGRESS COnlineUpdater::GetUpdates(QObject* receiver, const char* member, co
 	return SB_PROGRESS(OP_ASYNC, pJob->m_pProgress);
 }
 
-void CGetUpdatesJob::Finish(QNetworkReply* pReply)
-{
+void CGetUpdatesJob::Finish(QNetworkReply* pReply) {
 	QVariantMap Data;
 
 	auto err = pReply->error();
@@ -170,48 +169,49 @@ void CGetUpdatesJob::Finish(QNetworkReply* pReply)
 
 		if (Data.contains("cbl"))
 		{
-			/*QVariantMap CertBL = Data["cbl"].toMap();
-			QByteArray BlockList0 = CertBL["list"].toByteArray();
-			QByteArray BlockListSig0 = QByteArray::fromHex(CertBL["sig"].toByteArray());
+			// 			/*QVariantMap CertBL = Data["cbl"].toMap();
+			// 			QByteArray BlockList0 = CertBL["list"].toByteArray();
+			// 			QByteArray BlockListSig0 = QByteArray::fromHex(CertBL["sig"].toByteArray());
+			//
+			// 			if (theAPI->TestSignature(BlockList0, BlockListSig0))
+			// 			{
+			// 				std::string BlockList;
+			// 				BlockList.resize(qMax(0x10000, BlockList0.size()), 0); // 64 kb should be enough
+			// 				static quint32 BlockListLen = 0;
+			// 				if (BlockListLen == 0) {
+			// 					SB_STATUS Status = theAPI->GetSecureParam("CertBlockList", (void*)BlockList.c_str(), BlockList.size(), &BlockListLen, true);
+			// 					//BlockList.resize(BlockListLen);
+			// 					if (Status.IsError()) // error
+			// 						BlockListLen = 0;
+			// 				}
+			//
+			// 				if (BlockListLen < BlockList0.size())
+			// 				{
+			// 					theAPI->SetSecureParam("CertBlockList", BlockList0, BlockList0.size());
+			// 					theAPI->SetSecureParam("CertBlockListSig", BlockListSig0, BlockListSig0.size());
+			// 					BlockListLen = BlockList0.size();
+			// 					//BlockList = BlockList0;
+			//
+			// 					theGUI->ReloadCert();
+			// 				}
+			// 			}
+			// 			else
+			// 			{
+			// 				Q_ASSERT(0);
+			// 			}
+			// 		}*/
 
-			if (theAPI->TestSignature(BlockList0, BlockListSig0))
-			{
-				std::string BlockList;
-				BlockList.resize(qMax(0x10000, BlockList0.size()), 0); // 64 kb should be enough
-				static quint32 BlockListLen = 0;
-				if (BlockListLen == 0) {
-					SB_STATUS Status = theAPI->GetSecureParam("CertBlockList", (void*)BlockList.c_str(), BlockList.size(), &BlockListLen, true);
-					//BlockList.resize(BlockListLen);
-					if (Status.IsError()) // error
-						BlockListLen = 0;
-				}
+			time_t CurrentDate = QDateTime::currentDateTimeUtc().toSecsSinceEpoch();
+			theAPI->SetSecureParam("LastUpdate", &CurrentDate, sizeof(CurrentDate));
 
-				if (BlockListLen < BlockList0.size())
-				{
-					theAPI->SetSecureParam("CertBlockList", BlockList0, BlockList0.size());
-					theAPI->SetSecureParam("CertBlockListSig", BlockListSig0, BlockListSig0.size());
-					BlockListLen = BlockList0.size();
-					//BlockList = BlockList0;
+			QString LabelMsg = Data["labelMsg"].toString();
+			theConf->SetValue("Updater/LabelMessage", LabelMsg);
+		}
 
-					theGUI->ReloadCert();
-				}
-			}
-			else
-			{
-				Q_ASSERT(0);
-			}
-		}*/
+		m_pProgress->Finish(SB_OK);
 
-		time_t CurrentDate = QDateTime::currentDateTimeUtc().toSecsSinceEpoch();
-		theAPI->SetSecureParam("LastUpdate", &CurrentDate, sizeof(CurrentDate));
-
-		QString LabelMsg = Data["labelMsg"].toString();
-		theConf->SetValue("Updater/LabelMessage", LabelMsg);
+		emit UpdateData(Data, m_Params);
 	}
-
-	m_pProgress->Finish(SB_OK);
-
-	emit UpdateData(Data, m_Params);
 }
 
 QDateTime COnlineUpdater::GetLastUpdateDate()
