@@ -1416,75 +1416,74 @@ void CSandMan::UpdateLabel()
 		//auto neon = new CNeonEffect(10, 4, 180); // 140
 		//m_pLabel->setGraphicsEffect(NULL);
 	}
-	/* else if (g_Certificate.isEmpty())
-	{
-		LabelText = theConf->GetString("Updater/LabelMessage");
-		if(LabelText.isEmpty())
-			LabelText = tr("<a href=\"https://sandboxie-plus.com/go.php?to=patreon\">Support Sandboxie-Plus on Patreon</a>");
-		LabelTip = tr("Click to open web browser");
+// 	/* else if (g_Certificate.isEmpty())
+// 	{
+// 		LabelText = theConf->GetString("Updater/LabelMessage");
+// 		if(LabelText.isEmpty())
+// 			LabelText = tr("<a href=\"https://sandboxie-plus.com/go.php?to=patreon\">Support Sandboxie-Plus on Patreon</a>");
+// 		LabelTip = tr("Click to open web browser");
+//
+// 		//auto neon = new CNeonEffect(10, 4, 240);
+// 		auto neon = new CNeonEffect(10, 4);
+// 		//neon->setGlowColor(Qt::green);
+// 		neon->setHue(240);
+// 		/*if(m_DarkTheme)
+// 			neon->setColor(QColor(218, 130, 42));
+// 		else
+// 			neon->setColor(Qt::blue);*/
+// 		m_pLabel->setGraphicsEffect(neon);
+//
+// 		/*auto glowAni = new QVariantAnimation(neon);
+// 		glowAni->setDuration(10000);
+// 		glowAni->setLoopCount(-1);
+// 		glowAni->setStartValue(0);
+// 		glowAni->setEndValue(360);
+// 		glowAni->setEasingCurve(QEasingCurve::InQuad);
+// 			connect(glowAni, &QVariantAnimation::valueChanged, [neon](const QVariant &value) {
+// 				neon->setHue(value.toInt());
+// 				qDebug() << value.toInt();
+// 		});
+// 		glowAni->start();*/
+//
+// 		/*auto glowAni = new QVariantAnimation(neon);
+// 		glowAni->setDuration(3000);
+// 		glowAni->setLoopCount(-1);
+// 		glowAni->setStartValue(5);
+// 		glowAni->setEndValue(20);
+// 		glowAni->setEasingCurve(QEasingCurve::InQuad);
+// 			connect(glowAni, &QVariantAnimation::valueChanged, [neon](const QVariant &value) {
+// 				neon->setBlurRadius(value.toInt());
+// 				qDebug() << value.toInt();
+// 		});
+// 		glowAni->start();*/
+//
+// 		/*auto glowAni = new QVariantAnimation(neon);
+// 		glowAni->setDuration(3000);
+// 		glowAni->setLoopCount(-1);
+// 		glowAni->setStartValue(1);
+// 		glowAni->setEndValue(20);
+// 		glowAni->setEasingCurve(QEasingCurve::InQuad);
+// 			connect(glowAni, &QVariantAnimation::valueChanged, [neon](const QVariant &value) {
+// 				neon->setGlow(value.toInt());
+// 				qDebug() << value.toInt();
+// 		});
+// 		glowAni->start();*/
+//
+// 		/*auto glowAni = new QVariantAnimation(neon);
+// 		glowAni->setDuration(3000);
+// 		glowAni->setLoopCount(-1);
+// 		glowAni->setStartValue(5);
+// 		glowAni->setEndValue(25);
+// 		glowAni->setEasingCurve(QEasingCurve::InQuad);
+// 			connect(glowAni, &QVariantAnimation::valueChanged, [neon](const QVariant &value) {
+// 				int iValue = value.toInt();
+// 				if (iValue >= 15)
+// 					iValue = 30 - iValue;
+// 				neon->setGlow(iValue);
+// 				neon->setBlurRadius(iValue);
+// 		});
+// 		glowAni->start();*/
 
-		//auto neon = new CNeonEffect(10, 4, 240);
-		auto neon = new CNeonEffect(10, 4);
-		//neon->setGlowColor(Qt::green);
-		neon->setHue(240);
-		/*if(m_DarkTheme)
-			neon->setColor(QColor(218, 130, 42));
-		else
-			neon->setColor(Qt::blue);*/
-		m_pLabel->setGraphicsEffect(neon);
-
-		/*auto glowAni = new QVariantAnimation(neon);
-		glowAni->setDuration(10000);
-		glowAni->setLoopCount(-1);
-		glowAni->setStartValue(0);
-		glowAni->setEndValue(360);
-		glowAni->setEasingCurve(QEasingCurve::InQuad);
-			connect(glowAni, &QVariantAnimation::valueChanged, [neon](const QVariant &value) {
-				neon->setHue(value.toInt());
-				qDebug() << value.toInt();
-		});
-		glowAni->start();*/
-
-		/*auto glowAni = new QVariantAnimation(neon);
-		glowAni->setDuration(3000);
-		glowAni->setLoopCount(-1);
-		glowAni->setStartValue(5);
-		glowAni->setEndValue(20);
-		glowAni->setEasingCurve(QEasingCurve::InQuad);
-			connect(glowAni, &QVariantAnimation::valueChanged, [neon](const QVariant &value) {
-				neon->setBlurRadius(value.toInt());
-				qDebug() << value.toInt();
-		});
-		glowAni->start();*/
-
-		/*auto glowAni = new QVariantAnimation(neon);
-		glowAni->setDuration(3000);
-		glowAni->setLoopCount(-1);
-		glowAni->setStartValue(1);
-		glowAni->setEndValue(20);
-		glowAni->setEasingCurve(QEasingCurve::InQuad);
-			connect(glowAni, &QVariantAnimation::valueChanged, [neon](const QVariant &value) {
-				neon->setGlow(value.toInt());
-				qDebug() << value.toInt();
-		});
-		glowAni->start();*/
-
-		/*auto glowAni = new QVariantAnimation(neon);
-		glowAni->setDuration(3000);
-		glowAni->setLoopCount(-1);
-		glowAni->setStartValue(5);
-		glowAni->setEndValue(25);
-		glowAni->setEasingCurve(QEasingCurve::InQuad);
-			connect(glowAni, &QVariantAnimation::valueChanged, [neon](const QVariant &value) {
-				int iValue = value.toInt();
-				if (iValue >= 15)
-					iValue = 30 - iValue;
-				neon->setGlow(iValue);
-				neon->setBlurRadius(iValue);
-		});
-		glowAni->start();*/
-
-	}
 
 	if(m_pSeparator) m_pSeparator->setVisible(!LabelText.isEmpty());
 	m_pLabel->setVisible(!LabelText.isEmpty());
