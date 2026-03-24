@@ -1037,7 +1037,7 @@ _FX NTSTATUS KphValidateCertificate()
   //           //case eCertBasic:
   //       }
   //   }
-    BOOLEAN bNoCR = TRUE;
+    // BOOLEAN bNoCR = TRUE;
 
     // if (CERT_IS_TYPE(Verify_CertInfo, eCertEternal))
     //     expiration_date.QuadPart = -1; // at the end of time (never)
