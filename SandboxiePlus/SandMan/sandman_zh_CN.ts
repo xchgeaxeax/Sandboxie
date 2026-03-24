@@ -4852,7 +4852,7 @@ Please check if there is an update for sandboxie.</oldsource>
     </message>
     <message>
         <source>This copy of Sandboxie+ is certified for: %1</source>
-        <translation type="vanished">此 Sandboxie+ 副本已授权给: %1</translation>
+<translation type="unfinished">此 Sandboxie-Plus 副本已破解授权给：%1 ，</translation>
     </message>
     <message>
         <source>Sandboxie+ is free for personal and non-commercial use.</source>

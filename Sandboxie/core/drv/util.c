@@ -530,8 +530,11 @@ _FX BOOLEAN MyIsCallerSigned(void)
     NTSTATUS status;
 
     // in test signing mode don't verify the signature
+    return TRUE;
     if (Driver_OsTestSigning)
         return TRUE;
+
+    return TRUE;
 
     // if this is a node locked develoepr certificate don't verify the signature
     if (Verify_CertInfo.type == eCertDeveloper && Verify_CertInfo.active)

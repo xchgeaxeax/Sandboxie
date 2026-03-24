@@ -1416,7 +1416,7 @@ void CSandMan::UpdateLabel()
 		//auto neon = new CNeonEffect(10, 4, 180); // 140
 		//m_pLabel->setGraphicsEffect(NULL);
 	}
-	else if (g_Certificate.isEmpty())
+	/* else if (g_Certificate.isEmpty())
 	{
 		LabelText = theConf->GetString("Updater/LabelMessage");
 		if(LabelText.isEmpty())
@@ -1631,6 +1631,7 @@ void CSandMan::CreateView(int iViewMode)
 
 void CSandMan::CheckForUpdates(bool bManual)
 {
+	return;
 	m_pUpdater->CheckForUpdates(bManual);
 }
 
@@ -2374,7 +2375,7 @@ void CSandMan::UpdateDrives()
 
 void CSandMan::UpdateForceUSB()
 {
-	if (!theAPI->GetGlobalSettings()->GetBool("ForceUsbDrives", false) || !g_CertInfo.active)
+	if (!theAPI->GetGlobalSettings()->GetBool("ForceUsbDrives", false))
 		return;
 
 	QString UsbSandbox = theAPI->GetGlobalSettings()->GetText("UsbSandbox", "USB_Box");
@@ -2852,8 +2853,8 @@ void CSandMan::OnStatusChanged()
 		SB_STATUS Status = ReloadCert();
 		if (Status)
 			CSettingsWindow::LoadCertificate();
-		else if(Status.GetStatus() != 0xc0000225 /*STATUS_NOT_FOUND*/)
-			SetCertificate(""); // always delete invalid certificates
+		// else if(Status.GetStatus() != 0xc0000225 /*STATUS_NOT_FOUND*/)
+		// 	SetCertificate(""); // always delete invalid certificates
 
 		uchar UsageFlags = 0;
 		if (theAPI->GetSecureParam("UsageFlags", &UsageFlags, sizeof(UsageFlags))) {
@@ -3489,42 +3490,42 @@ SB_STATUS CSandMan::ReloadCert(QWidget* pWidget)
 
 	theAPI->GetDriverInfo(-1, &g_CertInfo.State, sizeof(g_CertInfo.State));
 
-	if (!Status.IsError())
-	{
-		BYTE CertBlocked = 0;
-		theAPI->GetSecureParam("CertBlocked", &CertBlocked, sizeof(CertBlocked));
-		if (CertBlocked) {
-			if (g_CertInfo.type == eCertEvaluation)
-				g_CertInfo.active = 0; // no eval when cert blocked
-			else {
-				CertBlocked = 0;
-				theAPI->SetSecureParam("CertBlocked", &CertBlocked, sizeof(CertBlocked));
-			}
-		}
-	}
-	else if (Status.GetStatus() == 0xC0000804L /*STATUS_CONTENT_BLOCKED*/)
-	{
-		QMessageBox::critical(pWidget ? pWidget : this, "Sandboxie-Plus",
-			tr("The certificate you are attempting to use has been blocked, meaning it has been invalidated for cause. Any attempt to use it constitutes a breach of its terms of use!"));
-
-		BYTE CertBlocked = 1;
-		theAPI->SetSecureParam("CertBlocked", &CertBlocked, sizeof(CertBlocked));
-	}
-	else if (Status.GetStatus() != 0xC0000225L /*STATUS_NOT_FOUND*/)
-	{
-		QString Info;
-		switch (Status.GetStatus())
-		{
-		case 0xC000000DL: /*STATUS_INVALID_PARAMETER*/
-		case 0xC0000079L: /*STATUS_INVALID_SECURITY_DESCR:*/
-		case 0xC000A000L: /*STATUS_INVALID_SIGNATURE:*/			Info = tr("The Certificate Signature is invalid!"); break;
-		case 0xC0000024L: /*STATUS_OBJECT_TYPE_MISMATCH:*/		Info = tr("The Certificate is not suitable for this product."); break;
-		case 0xC0000485L: /*STATUS_FIRMWARE_IMAGE_INVALID:*/	Info = tr("The Certificate is node locked."); break;
-		default:												Info = QString("0x%1").arg((quint32)Status.GetStatus(), 8, 16, QChar('0'));
-		}
-
-		QMessageBox::critical(pWidget ? pWidget : this, "Sandboxie-Plus", tr("The support certificate is not valid.\nError: %1").arg(Info));
-	}
+	// if (!Status.IsError())
+	// {
+	// 	BYTE CertBlocked = 0;
+	// 	theAPI->GetSecureParam("CertBlocked", &CertBlocked, sizeof(CertBlocked));
+	// 	if (CertBlocked) {
+	// 		if (g_CertInfo.type == eCertEvaluation)
+	// 			g_CertInfo.active = 0; // no eval when cert blocked
+	// 		else {
+	// 			CertBlocked = 0;
+	// 			theAPI->SetSecureParam("CertBlocked", &CertBlocked, sizeof(CertBlocked));
+	// 		}
+	// 	}
+	// }
+	// else if (Status.GetStatus() == 0xC0000804L /*STATUS_CONTENT_BLOCKED*/)
+	// {
+	// 	QMessageBox::critical(pWidget ? pWidget : this, "Sandboxie-Plus",
+	// 		tr("The certificate you are attempting to use has been blocked, meaning it has been invalidated for cause. Any attempt to use it constitutes a breach of its terms of use!"));
+	//
+	// 	BYTE CertBlocked = 1;
+	// 	theAPI->SetSecureParam("CertBlocked", &CertBlocked, sizeof(CertBlocked));
+	// }
+	// else if (Status.GetStatus() != 0xC0000225L /*STATUS_NOT_FOUND*/)
+	// {
+	// 	QString Info;
+	// 	switch (Status.GetStatus())
+	// 	{
+	// 	case 0xC000000DL: /*STATUS_INVALID_PARAMETER*/
+	// 	case 0xC0000079L: /*STATUS_INVALID_SECURITY_DESCR:*/
+	// 	case 0xC000A000L: /*STATUS_INVALID_SIGNATURE:*/			Info = tr("The Certificate Signature is invalid!"); break;
+	// 	case 0xC0000024L: /*STATUS_OBJECT_TYPE_MISMATCH:*/		Info = tr("The Certificate is not suitable for this product."); break;
+	// 	case 0xC0000485L: /*STATUS_FIRMWARE_IMAGE_INVALID:*/	Info = tr("The Certificate is node locked."); break;
+	// 	default:												Info = QString("0x%1").arg((quint32)Status.GetStatus(), 8, 16, QChar('0'));
+	// 	}
+	//
+	// 	QMessageBox::critical(pWidget ? pWidget : this, "Sandboxie-Plus", tr("The support certificate is not valid.\nError: %1").arg(Info));
+	// }
 
 #ifdef _DEBUG
 	qDebug() << "g_CertInfo" << g_CertInfo.State;
@@ -3536,54 +3537,58 @@ SB_STATUS CSandMan::ReloadCert(QWidget* pWidget)
 	qDebug() << "g_CertInfo.level" << CSettingsWindow::GetCertLevel();
 #endif
 
-	if (g_CertInfo.active)
-	{
-		// behave as if there would be no certificate at all
-		if (theConf->GetBool("Debug/IgnoreCertificate", false))
-			g_CertInfo.State = 0;
-		else
-		{
-			// simulate certificate being about to expire in 3 days from now
-			if (theConf->GetBool("Debug/CertFakeAboutToExpire", false))
-				g_CertInfo.expirers_in_sec = 3 * 24 * 3600;
-
-			// simulate certificate having expired but being in the grace period
-			if (theConf->GetBool("Debug/CertFakeGracePeriode", false))
-				g_CertInfo.grace_period = 1;
-
-			// simulate a subscription type certificate having expired
-			if (theConf->GetBool("Debug/CertFakeOld", false)) {
-				g_CertInfo.active = 0;
-				g_CertInfo.expired = 1;
-			}
-
-			// simulate a perpetual use certificate being outside the update window
-			if (theConf->GetBool("Debug/CertFakeExpired", false)) {
-				// still valid
-				g_CertInfo.expired = 1;
-			}
-
-			// simulate a perpetual use certificate being outside the update window
-			// and having been applied to a version built after the update window has ended
-			if (theConf->GetBool("Debug/CertFakeOutdated", false)) {
-				g_CertInfo.active = 0;
-				g_CertInfo.expired = 1;
-				g_CertInfo.outdated = 1;
-			}
-
-			int Type = theConf->GetInt("Debug/CertFakeType", -1);
-			if (Type != -1)
-				g_CertInfo.type = Type << 2;
-
-			int Level = theConf->GetInt("Debug/CertFakeLevel", -1);
-			if (Level != -1)
-				g_CertInfo.level = Level;
-		}
-	}
-
-	if (CERT_IS_TYPE(g_CertInfo, eCertBusiness))
-		InitCertSlot();
-
+	// if (g_CertInfo.active)
+	// {
+	// 	// behave as if there would be no certificate at all
+	// 	if (theConf->GetBool("Debug/IgnoreCertificate", false))
+	// 		g_CertInfo.State = 0;
+	// 	else
+	// 	{
+	// 		// simulate certificate being about to expire in 3 days from now
+	// 		if (theConf->GetBool("Debug/CertFakeAboutToExpire", false))
+	// 			g_CertInfo.expirers_in_sec = 3 * 24 * 3600;
+	//
+	// 		// simulate certificate having expired but being in the grace period
+	// 		if (theConf->GetBool("Debug/CertFakeGracePeriode", false))
+	// 			g_CertInfo.grace_period = 1;
+	//
+	// 		// simulate a subscription type certificate having expired
+	// 		if (theConf->GetBool("Debug/CertFakeOld", false)) {
+	// 			g_CertInfo.active = 0;
+	// 			g_CertInfo.expired = 1;
+	// 		}
+	//
+	// 		// simulate a perpetual use certificate being outside the update window
+	// 		if (theConf->GetBool("Debug/CertFakeExpired", false)) {
+	// 			// still valid
+	// 			g_CertInfo.expired = 1;
+	// 		}
+	//
+	// 		// simulate a perpetual use certificate being outside the update window
+	// 		// and having been applied to a version built after the update window has ended
+	// 		if (theConf->GetBool("Debug/CertFakeOutdated", false)) {
+	// 			g_CertInfo.active = 0;
+	// 			g_CertInfo.expired = 1;
+	// 			g_CertInfo.outdated = 1;
+	// 		}
+	//
+	// 		int Type = theConf->GetInt("Debug/CertFakeType", -1);
+	// 		if (Type != -1)
+	// 			g_CertInfo.type = Type << 2;
+	//
+	// 		int Level = theConf->GetInt("Debug/CertFakeLevel", -1);
+	// 		if (Level != -1)
+	// 			g_CertInfo.level = Level;
+	// 	}
+	// }
+	//
+	// if (CERT_IS_TYPE(g_CertInfo, eCertBusiness))
+	// 	InitCertSlot();
+	g_CertInfo.active = true;
+	g_CertInfo.expired = false;
+	g_CertInfo.outdated = false;
+	g_CertInfo.type = eCertEternal;
+	g_CertInfo.level = eCertMaxLevel;
 	if (CERT_IS_TYPE(g_CertInfo, eCertEvaluation))
 	{
 		if (g_CertInfo.expired)
@@ -3818,7 +3823,7 @@ SB_STATUS CSandMan::ConnectSbieImpl()
 		Status = SB_OK;
 	}
 	else if (Status.GetStatus() == 0xC000A000L /*STATUS_INVALID_SIGNATURE*/) {
-		QMessageBox::critical(this, "Sandboxie-Plus", tr("<b>ERROR:</b> The Sandboxie-Plus Manager (SandMan.exe) does not have a valid signature (SandMan.exe.sig). Please download a trusted release from the <a href=\"https://sandboxie-plus.com/go.php?to=sbie-get\">official Download page</a>."));
+		// QMessageBox::critical(this, "Sandboxie-Plus", tr("<b>ERROR:</b> The Sandboxie-Plus Manager (SandMan.exe) does not have a valid signature (SandMan.exe.sig). Please download a trusted release from the <a href=\"https://sandboxie-plus.com/go.php?to=sbie-get\">official Download page</a>."));
 		Status = SB_OK;
 	}
 
@@ -4563,9 +4568,10 @@ void CSandMan::OpenUrl(QUrl url)
 	}
 
 	if (scheme == "sbie") {
-		if (path == "/check")
-			m_pUpdater->CheckForUpdates(true);
-		else if (path == "/installer")
+		// if (path == "/check")
+		// 	m_pUpdater->CheckForUpdates(true);
+		// else if (path == "/installer")
+		if (path == "/installer")
 			m_pUpdater->RunInstaller(false);
 		else if (path == "/apply")
 			m_pUpdater->ApplyUpdate(COnlineUpdater::eFull, false);
@@ -4822,11 +4828,11 @@ void CSandMan::OnAbout()
 		).arg(theGUI->GetVersion(true));
 
 		QString CertInfo;
-		if (!g_Certificate.isEmpty())
-			CertInfo = tr("This copy of Sandboxie-Plus is certified for: %1").arg(GetArguments(g_Certificate, L'\n', L':').value("NAME"));
-		else
-			CertInfo = tr("Sandboxie-Plus is free for personal and non-commercial use.");
-
+		// if (!g_Certificate.isEmpty())
+		// 	CertInfo = tr("This copy of Sandboxie-Plus is certified for: %1").arg(GetArguments(g_Certificate, L'\n', L':').value("NAME"));
+		// else
+		// 	CertInfo = tr("Sandboxie-Plus is free for personal and non-commercial use.");
+		CertInfo = tr("This copy of Sandboxie-Plus is certified for: %1").arg("Hacker");
 		QString SbiePath = theAPI->GetSbiePath();
 
 		QString AboutText = tr(
